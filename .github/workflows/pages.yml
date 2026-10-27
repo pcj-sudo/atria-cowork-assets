@@ -19,9 +19,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download preview-20261027 --repo "${{ github.repository }}" --pattern "assets.zip" --dir bundle
+          gh release download preview-20261027 --repo "${{ github.repository }}" --pattern "assets.zip.part-*" --dir bundle
+          cat bundle/assets.zip.part-* > bundle/assets.zip
           mkdir _site
           unzip -q bundle/assets.zip -d _site
+      - name: Exclude local upload tooling
+        run: rm -f _site/media-import.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
